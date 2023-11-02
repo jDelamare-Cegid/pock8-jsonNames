@@ -1,0 +1,15 @@
+{
+  "possibleColumns": [
+    "registration number",
+    "name",
+    "surname",
+    "extra_hours",
+    "tip",
+    "bonus"
+  ],
+  "helpInfo": [],
+  "outputFormat": {
+    "columns": [ "a", "b" ],
+    "separator": ","
+  }
+}
