@@ -3,10 +3,11 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AI.ChatCompletion;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 // https://devblogs.microsoft.com/dotnet/demystifying-retrieval-augmented-generation-with-dotnet/
 
-fstring aoaiEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
+string aoaiEndpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")!;
 string aoaiApiKey = Environment.GetEnvironmentVariable("AZURE_OPENAI_API_KEY")!;
 string aoaiModel = "gpt-35-turbo";
 
@@ -51,11 +52,42 @@ chat.AddAssistantMessage(builder.ToString());
 try
 {
     JsonElement answer = (JsonElement)JsonSerializer.Deserialize<object>(builder.ToString());
-    Console.WriteLine(answer.ToString());
+    /*Console.WriteLine(answer.ToString());*/
+    List<JsonObject> csv = readCSV("ressources/example1.csv", answer);
+    foreach(JsonObject line in csv)
+    {
+        Console.WriteLine(line.ToString());
+    }
 }
 catch(Exception e)
 {
     Console.WriteLine(builder.ToString());
+}
+
+List<JsonObject> readCSV(string path, JsonElement output)
+{
+
+    IEnumerable<String> fileContent = File.ReadLines(path);
+
+    string separtator = output.GetProperty("separator").ToString();
+    string[] columns = output.GetProperty("columns").EnumerateArray().Select(x => x.ToString()).ToArray();
+    
+    if(output.GetProperty("hasHeader").GetBoolean())
+        fileContent = fileContent.Skip(1);
+
+    List<JsonObject> employees = new List<JsonObject>();
+    foreach (string line in fileContent)
+    {
+        string[] values = line.Split(separtator);
+        JsonObject lineResult = new JsonObject();
+        for (int i = 0; i < columns.Length; i++)
+        {
+            lineResult.Add(columns[i], values[i]);
+        }
+        employees.Add(lineResult);
+    }
+
+    return employees;
 }
 
 builder.Clear();

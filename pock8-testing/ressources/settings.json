@@ -1,15 +1,16 @@
 {
-  "possibleColumns": [
-    "registration number",
-    "name",
-    "surname",
-    "extra_hours",
-    "tip",
-    "bonus"
-  ],
+  "possibleColumns": {
+    "registration number": "Registration number of the employee",
+    "name": "Name of the employee",
+    "surname": "Surname of the employee",
+    "extra_hours": "Number of extra hours worked by the employee",
+    "tip": "Tip received by the employee",
+    "bonus": "Bonus received by the employee"
+  },
   "helpInfo": [],
   "outputFormat": {
     "columns": [ "a", "b" ],
-    "separator": ","
+    "separator": ",",
+    "hasHeader": true
   }
 }
